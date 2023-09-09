@@ -62,8 +62,24 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
     success_message = '<i class="bi bi-check-circle-fill"></i> Signup complete. You may now log in.'
 
 
-class DashboardView(LoggedInTemplateView):
+class DashboardView(LoggedInView):
     template_name = "members/dashboard.html"
+    expense_model = Expense
+
+    def get(self, request, *args, **kwargs):
+
+        this_month = datetime.now().month
+        this_year = datetime.now().year
+        user_expense_data = self.expense_model.objects.filter(
+            user=request.user,
+            date__month=this_month,
+            date__year=this_year
+        )
+        data = {
+            'user_data': user_expense_data,
+            'amount_sum': user_expense_data.aggregate(Sum('amount'))['amount__sum'],
+        }
+        return render(request, self.template_name, data)
 
 
 class ExpenseCategoryView(LoggedInView):
@@ -116,7 +132,8 @@ class ExpenseCategoryView(LoggedInView):
         user_expense_data = self.expense_model.objects.filter(
             user=request.user,
             date__month=this_month,
-            date__year=this_year
+            date__year=this_year,
+            category=category
         )
         data = {
             'user_data': user_expense_data,

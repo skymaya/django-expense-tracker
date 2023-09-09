@@ -2,40 +2,9 @@
 
 <nav class="navbar navbar-light bg-light fixed-top">
     <div class="container-fluid">
-        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="bi bi-list"></i> Open Menu</button>
+        <button class="btn btn-primary ms-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="bi bi-list"></i> Open Menu</button>
     </div>
 </nav>
-
-<script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function(){
-  document.querySelectorAll('.sidebar .nav-link').forEach(function(element){
-    
-    element.addEventListener('click', function (e) {
-
-      let nextEl = element.nextElementSibling;
-      let parentEl  = element.parentElement;	
-
-        if(nextEl) {
-            e.preventDefault();	
-            let mycollapse = new bootstrap.Collapse(nextEl);
-            
-            if(nextEl.classList.contains('show')){
-              mycollapse.hide();
-            } else {
-                mycollapse.show();
-                // find other submenus with class=show
-                var opened_submenu = parentEl.parentElement.querySelector('.submenu.show');
-                // if it exists, then close all of them
-                if(opened_submenu){
-                  new bootstrap.Collapse(opened_submenu);
-                }
-            }
-        }
-    }); // addEventListener
-  }) // forEach
-}); 
-// DOMContentLoaded  end
-</script>
 
 <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header">
@@ -48,16 +17,23 @@
                 <nav class="nav flex-column">
                     <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                 </nav>
-                <nav class="nav flex-column nav-item has-submenu">
-                    <a class="nav-link" href="#">Categories <i class="bi bi-caret-down-fill"></i></a>
-                    {% categories as categories %}
-                    {% if categories %}
-                    {% for category in categories %}
-                    <nav class="nav flex-column submenu collapse ms-3">
-                        <a class="nav-link" href="{% url 'expense_category' category.slug %}">{{category.name}}</a>
-                    </nav>
-                    {% endfor %}
-                    {% endif %}
+                <nav class="nav flex-column nav-item has-submenu accordion accordion-flush" id="accordionExample">
+                    <div class="accordion-item">
+                      <a data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="nav-link" href="#">Expense Categories <i class="bi bi-caret-down-fill"></i></a>
+                      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          {% categories as categories %}
+                            {% if categories %}                    
+                                {% for category in categories %}
+                                <a class="nav-link" href="{% url 'expense_category' category.slug %}">{{category.name}}</a>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                </nav>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="#">Support</a>
                 </nav>
                 <nav class="nav flex-column">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

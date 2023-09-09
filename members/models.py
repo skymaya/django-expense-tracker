@@ -8,9 +8,14 @@ class User(AbstractUser):
 
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=255)
-    short_name = models.CharField(max_length=255)
     long_description = models.TextField()
     slug = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class Expense(models.Model):
@@ -22,3 +27,6 @@ class Expense(models.Model):
 
     class Meta:
         ordering = ['date']
+
+    def __str__(self):
+        return self.description
