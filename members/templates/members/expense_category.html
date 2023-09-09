@@ -1,0 +1,85 @@
+{% extends 'members_base.html' %}
+{% load my_filters %}
+{% block title %}Entertainment{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript">
+  $(document).ready(function (){
+    $('.delete-button').click(function(){
+        var pk = $(this).data("pk");
+        var description = $(this).data("description");
+        $("#deletemodal .description").text(description);
+        $('#deletemodal #delete-pk').attr('value', pk);
+    });
+  })
+</script>
+
+<h4>{{category_name}}</h4>
+
+<p>{{category_description}}<br>Keep track of your {{category_name}} expenses here.</p>
+
+<p>Current month {{category_name}} expenses:</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Amount</th>
+        <th scope="col">Description</th>
+        <th scope="col">Date Added</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for expense in user_data.all %}
+        <tr>
+            <td>{{expense.amount}}</td>
+            <td>{{expense.description}}</td>
+            <td>{{expense.date}}</td>
+            <td><button type="button" data-bs-toggle="modal" data-bs-target="#deletemodal" class="btn btn-danger delete-button" data-pk="{{expense.pk}}" data-description="{{expense.description}}">Delete</button></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3">Total: {{amount_sum}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form class="row g-3" method="post">
+    {% csrf_token %}
+    {% for field in add_expense_form %}
+    <div class="col-auto">
+      <label for="{{ field.id_for_label }}" class="visually-hidden">{{ field.label_tag }}</label>
+      <input type="text" type="{{field.widget_type}}" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" placeholder="{{ field.name }}" required>
+    </div>
+    {% endfor %}
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary mb-3" name="submit" value="add">Add Expense</button>
+    </div>
+</form>
+
+
+<!-- Modal -->
+<div class="modal fade" id="deletemodal" tabindex="-1" aria-labelledby="deletemodallabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Expense Item</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                Delete expense item <span class="description"></span>?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="delete-pk" name="delete_pk" value="">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger" name="submit" value="delete">Confirm Delete</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+  
+{% endblock %}

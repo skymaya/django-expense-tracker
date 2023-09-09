@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% load my_filters %}
+
+{% block content %}
+
+<script type="text/javascript">
+  $(document).ready(function (){
+    $("[data-bs-toggle=tooltip]").tooltip()
+  })
+</script>
+<style> 
+  .tooltip-inner {
+    text-align: left!important;
+}
+</style>
+ 
+<div class="row mt-5">
+
+  {% if messages %}
+  <div class="text-center mb-2">
+  {% for message in messages %}
+    {{ message|safe }}
+  {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if form.errors %}
+    <div class="text-center mb-2">
+      {% for field in form %}
+        {% for error in field.errors %}
+          <div><i class="bi bi-x-circle-fill"></i> {{error}}</div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="card mx-auto" style="width: 24rem;">
+    <div class="card-body">
+      <h5 class="card-title">Sign up</h5>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label_tag }} <a href="#" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="right" data-bs-title="{{field.help_text}}"><i class="bi bi-question-circle-fill"></i></a></label>
+          <input name="{{ field.name }}" type="{{field.widget_type}}" class="form-control" id="{{ field.id_for_label }}">
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+      <p>Already have an account? Sign in <a href="{% url 'login' %}">here</a>.</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+<nav class="navbar navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="bi bi-list"></i> Open Menu</button>
+    </div>
+</nav>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(){
+  document.querySelectorAll('.sidebar .nav-link').forEach(function(element){
+    
+    element.addEventListener('click', function (e) {
+
+      let nextEl = element.nextElementSibling;
+      let parentEl  = element.parentElement;	
+
+        if(nextEl) {
+            e.preventDefault();	
+            let mycollapse = new bootstrap.Collapse(nextEl);
+            
+            if(nextEl.classList.contains('show')){
+              mycollapse.hide();
+            } else {
+                mycollapse.show();
+                // find other submenus with class=show
+                var opened_submenu = parentEl.parentElement.querySelector('.submenu.show');
+                // if it exists, then close all of them
+                if(opened_submenu){
+                  new bootstrap.Collapse(opened_submenu);
+                }
+            }
+        }
+    }); // addEventListener
+  }) // forEach
+}); 
+// DOMContentLoaded  end
+</script>
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Menu</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <nav class="sidebar py-2 mb-4">
+            <div class="nav flex-column" id="nav_accordion">
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                </nav>
+                <nav class="nav flex-column nav-item has-submenu">
+                    <a class="nav-link" href="#">Categories <i class="bi bi-caret-down-fill"></i></a>
+                    <nav class="nav flex-column submenu collapse ms-3">
+                        <a class="nav-link" href="{% url 'expense_category' slug='entertainment' %}">Entertainment</a>
+                    </nav>
+                </nav>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                </nav>
+            </div>
+        </nav>
+    </div>
+</div>
