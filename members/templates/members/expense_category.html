@@ -19,7 +19,7 @@
 
 <p>{{category_description}}<br>Keep track of your {{category_name}} expenses here.</p>
 
-<p>Current month {{category_name}} expenses:</p>
+<h5>Current month {{category_name}} expenses:</h5>
 
 <table class="table table-striped table-hover">
     <thead>
@@ -36,7 +36,7 @@
             <td>{{expense.amount}}</td>
             <td>{{expense.description}}</td>
             <td>{{expense.date}}</td>
-            <td><button type="button" data-bs-toggle="modal" data-bs-target="#deletemodal" class="btn btn-danger delete-button" data-pk="{{expense.pk}}" data-description="{{expense.description}}">Delete</button></td>
+            <td><button type="button" data-bs-toggle="modal" data-bs-target="#deletemodal" class="btn btn-danger delete-button btn-sm" data-pk="{{expense.pk}}" data-description="{{expense.description}}">Delete</button></td>
         </tr>
         {% endfor %}
         <tr>
@@ -44,6 +44,8 @@
         </tr>
     </tbody>
 </table>
+
+<h5>Add new {{category_name}} expense:</h5>
 
 <form class="row g-3" method="post">
     {% csrf_token %}

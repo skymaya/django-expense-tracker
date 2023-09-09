@@ -27,10 +27,6 @@ def login_failed_message(sender, credentials, request, **kwargs):
 user_logged_out.connect(logout_message)
 user_login_failed.connect(login_failed_message)
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
-
 
 class LoggedInTemplateView(LoginRequiredMixin, TemplateView):
     login_url = reverse_lazy('login')
@@ -47,9 +43,16 @@ class LoggedInView(LoginRequiredMixin, TemplateView):
     template_name = None
 
 
-class CustomLoginView(auth_views.LoginView):
+class LoginView(auth_views.LoginView):
     form_class = AuthenticationForm
     template_name = "members/login.html"
+
+
+class LogoutView(View):
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('login')
 
 
 class SignUpView(SuccessMessageMixin, generic.CreateView):

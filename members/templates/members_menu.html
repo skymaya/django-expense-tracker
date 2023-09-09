@@ -1,3 +1,5 @@
+{% load menu %}
+
 <nav class="navbar navbar-light bg-light fixed-top">
     <div class="container-fluid">
         <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="bi bi-list"></i> Open Menu</button>
@@ -48,9 +50,14 @@
                 </nav>
                 <nav class="nav flex-column nav-item has-submenu">
                     <a class="nav-link" href="#">Categories <i class="bi bi-caret-down-fill"></i></a>
+                    {% categories as categories %}
+                    {% if categories %}
+                    {% for category in categories %}
                     <nav class="nav flex-column submenu collapse ms-3">
-                        <a class="nav-link" href="{% url 'expense_category' slug='entertainment' %}">Entertainment</a>
+                        <a class="nav-link" href="{% url 'expense_category' category.slug %}">{{category.name}}</a>
                     </nav>
+                    {% endfor %}
+                    {% endif %}
                 </nav>
                 <nav class="nav flex-column">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
