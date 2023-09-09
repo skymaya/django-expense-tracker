@@ -1,9 +1,36 @@
 {% extends 'members_base.html' %}
-
+{% load static %}
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
 <p>Hi {{ user.username }}!</p>
 <p>this is the dashboard</p>
 <p>Total expenses for the current month: {{amount_sum}}</p>
+<div class="row">
+    <div class="col-4">
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+    <div class="col-4">
+        
+    </div>
+    <div class="col-4">
+        
+    </div>
+</div>
+<script type="text/javascript">
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const labels = JSON.parse('{{expense_data_json|safe}}').labels
+    const expensedata = JSON.parse('{{expense_data_json|safe}}').data
+    const data = {
+        labels: labels,
+        datasets: [{
+        data: expensedata,
+        hoverOffset: 4
+        }]
+    };
+    const myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: data
+    });
+</script>
 {% endblock %}

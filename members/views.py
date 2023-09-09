@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.signals import user_logged_out, user_login_failed
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -70,14 +71,29 @@ class DashboardView(LoggedInView):
 
         this_month = datetime.now().month
         this_year = datetime.now().year
-        user_expense_data = self.expense_model.objects.filter(
+
+        amount_sum = 0
+
+        result = self.expense_model.objects.filter(
             user=request.user,
             date__month=this_month,
             date__year=this_year
-        )
+        ).values('category__name').annotate(total_amount=Sum('amount'))
+
+        labels = []
+        expenses = []
+
+        if result:
+            for category in result:
+                amount_sum += category['total_amount']
+                labels.append(category['category__name'])
+                expenses.append(category['total_amount'])
+
+        expense_data = {'labels': labels, 'data': expenses}
+
         data = {
-            'user_data': user_expense_data,
-            'amount_sum': user_expense_data.aggregate(Sum('amount'))['amount__sum'],
+            'amount_sum': amount_sum,
+            'expense_data_json': json.dumps(expense_data)
         }
         return render(request, self.template_name, data)
 
