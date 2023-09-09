@@ -4,7 +4,6 @@
 
 {% block content %}
 <p>Hi {{ user.username }}!</p>
-<p>this is the dashboard</p>
 <p>Total expenses for the current month: {{amount_sum}}</p>
 <div class="row">
     <div class="col-4">
@@ -21,11 +20,13 @@
     const ctx = document.getElementById('myChart').getContext('2d');
     const labels = JSON.parse('{{expense_data_json|safe}}').labels
     const expensedata = JSON.parse('{{expense_data_json|safe}}').data
+    const colors = JSON.parse('{{expense_data_json|safe}}').hex_colors
     const data = {
         labels: labels,
         datasets: [{
         data: expensedata,
-        hoverOffset: 4
+        hoverOffset: 4,
+        backgroundColor: colors,
         }]
     };
     const myChart = new Chart(ctx, {

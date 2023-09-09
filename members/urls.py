@@ -1,10 +1,18 @@
 from django.urls import path
-from .views import SignUpView, DashboardView, LoginView, ExpenseCategoryView, LogoutView
+from .views import (
+    SignUpView, 
+    DashboardView, 
+    LoginView, 
+    ExpenseCategoryView, 
+    LogoutView, 
+    SupportView
+)
 
 urlpatterns = [
     path("signup/", SignUpView.as_view(), name="signup"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("login/", LoginView.as_view(), name="login"),
+    path("support/", SupportView.as_view(), name="support"),
     path("<slug:slug>/", ExpenseCategoryView.as_view(), name="expense_category"),
 ]

@@ -20,7 +20,7 @@
                 <nav class="nav flex-column nav-item has-submenu accordion accordion-flush" id="accordionExample">
                     <div class="accordion-item">
                       <a data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="nav-link" href="#">Expense Categories <i class="bi bi-caret-down-fill"></i></a>
-                      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                           {% categories as categories %}
                             {% if categories %}                    
@@ -33,7 +33,7 @@
                     </div>
                 </nav>
                 <nav class="nav flex-column">
-                    <a class="nav-link" href="#">Support</a>
+                    <a class="nav-link" href="{% url 'support' %}">Support</a>
                 </nav>
                 <nav class="nav flex-column">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

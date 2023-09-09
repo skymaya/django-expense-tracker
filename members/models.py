@@ -10,6 +10,7 @@ class ExpenseCategory(models.Model):
     name = models.CharField(max_length=255)
     long_description = models.TextField()
     slug = models.CharField(max_length=255)
+    hex_color = models.CharField(max_length=255)
 
     class Meta:
         ordering = ['name']
@@ -30,3 +31,30 @@ class Expense(models.Model):
 
     def __str__(self):
         return self.description
+    
+
+class SupportTicket(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(auto_now=True)
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+
+    class Meta:
+        ordering = ['date']
+
+    def __str__(self):
+        return self.subject
+    
+
+class SupportTicketReply(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE)
+    date = models.DateField(auto_now=True)
+    body = models.TextField()
+    status = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ['date']
+
+    def __str__(self):
+        return f'Reply to {self.ticket.subject}'

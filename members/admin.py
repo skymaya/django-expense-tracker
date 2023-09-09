@@ -1,6 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, ExpenseCategory
+from .forms import ExpenseCategoryForm
+from .models import User, ExpenseCategory, SupportTicket
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    form = ExpenseCategoryForm
+
 
 admin.site.register(User, UserAdmin)
-admin.site.register(ExpenseCategory)
+admin.site.register(ExpenseCategory, CategoryAdmin)
+admin.site.register(SupportTicket)

@@ -1,7 +1,20 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User, Expense
+from .models import User, Expense, ExpenseCategory
 import re
+
+
+class ExpenseCategoryForm(forms.ModelForm):
+    hex_color = forms.CharField(
+        label='Hex Color', 
+        max_length=7,
+        help_text='For use with chart rendering',
+        widget=forms.TextInput(attrs={'type': 'color'})
+    )
+    
+    class Meta:
+        model = ExpenseCategory
+        fields = ['name', 'long_description', 'slug', 'hex_color']
 
 
 class ExpenseForm(forms.ModelForm):

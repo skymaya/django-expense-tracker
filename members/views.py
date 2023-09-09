@@ -14,7 +14,7 @@ from django.views.generic import TemplateView
 from django.contrib import messages
 from django.db.models import Sum
 from .forms import SignUpForm, ExpenseForm
-from .models import Expense, ExpenseCategory
+from .models import Expense, ExpenseCategory, SupportTicket, SupportTicketReply
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import DetailView
 
@@ -27,16 +27,6 @@ def login_failed_message(sender, credentials, request, **kwargs):
 
 user_logged_out.connect(logout_message)
 user_login_failed.connect(login_failed_message)
-
-
-class LoggedInTemplateView(LoginRequiredMixin, TemplateView):
-    login_url = reverse_lazy('login')
-    template_name = None
-
-
-class LoggedInDetailView(LoginRequiredMixin, TemplateView):
-    login_url = reverse_lazy('login')
-    template_name = None
 
 
 class LoggedInView(LoginRequiredMixin, TemplateView):
@@ -63,6 +53,12 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
     success_message = '<i class="bi bi-check-circle-fill"></i> Signup complete. You may now log in.'
 
 
+class SupportView(LoggedInView):
+    template_name = "members/support.html"
+    ticket_model = SupportTicket
+    ticket_reply_model = SupportTicketReply
+
+
 class DashboardView(LoggedInView):
     template_name = "members/dashboard.html"
     expense_model = Expense
@@ -78,18 +74,20 @@ class DashboardView(LoggedInView):
             user=request.user,
             date__month=this_month,
             date__year=this_year
-        ).values('category__name').annotate(total_amount=Sum('amount'))
+        ).values('category__name', 'category__hex_color').annotate(total_amount=Sum('amount'))
 
         labels = []
         expenses = []
+        hex_colors = []
 
         if result:
             for category in result:
                 amount_sum += category['total_amount']
                 labels.append(category['category__name'])
                 expenses.append(category['total_amount'])
+                hex_colors.append(category['category__hex_color'])
 
-        expense_data = {'labels': labels, 'data': expenses}
+        expense_data = {'labels': labels, 'data': expenses, 'hex_colors': hex_colors}
 
         data = {
             'amount_sum': amount_sum,
