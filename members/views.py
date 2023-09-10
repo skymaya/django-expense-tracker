@@ -74,7 +74,10 @@ class DashboardView(LoggedInView):
             user=request.user,
             date__month=this_month,
             date__year=this_year
-        ).values('category__name', 'category__hex_color').annotate(total_amount=Sum('amount'))
+        )\
+        .values('category__name', 'category__hex_color')\
+        .annotate(total_amount=Sum('amount'))\
+        .order_by('total_amount')
 
         labels = []
         expenses = []
@@ -103,12 +106,12 @@ class ExpenseCategoryView(LoggedInView):
     category_model = ExpenseCategory
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
         submit_val = request.POST.get('submit')
 
         category = self.category_model.objects.get(slug=self.kwargs['slug'])
 
         if submit_val == 'add':
+            form = self.form_class(request.POST)
             if form.is_valid():
                 obj = form.save(commit=False)
                 obj.user = request.user
@@ -116,7 +119,7 @@ class ExpenseCategoryView(LoggedInView):
                 obj.save()
                 messages.success(request, 'Expense added')
             else:
-                messages.error(request, 'Expense add failed')
+                messages.error(request, f'Expense add failed{form.errors}')
 
         if submit_val == 'delete':
             obj_pk = request.POST.get('delete_pk')
@@ -126,10 +129,29 @@ class ExpenseCategoryView(LoggedInView):
                     pk=obj_pk
                 )
             except ObjectDoesNotExist:
-                messages.error(request, 'Delete failed')
+                messages.error(request, 'Expense delete failed')
             else:
                 obj.delete()
                 messages.success(request, 'Expense deleted')
+
+        if submit_val == 'edit':
+            try:
+                check_obj = self.expense_model.objects.get(
+                    user=request.user,
+                    pk=request.POST.get('edit_pk')
+                )
+                form = self.form_class(request.POST, instance=check_obj)
+            except ObjectDoesNotExist:
+                messages.error(request, 'Expense update failed')
+            else:
+                if form.is_valid():
+                    obj = form.save(commit=False)
+                    obj.user = request.user
+                    obj.category = category
+                    obj.save()
+                    messages.success(request, 'Expense updated')
+                else:
+                    messages.error(request, f'Expense update failed{form.errors}')
 
         return HttpResponseRedirect(self.request.path_info)
 
@@ -140,7 +162,6 @@ class ExpenseCategoryView(LoggedInView):
             slug__iexact=self.kwargs['slug']
         )
 
-        add_expense_form = self.form_class()
         this_month = datetime.now().month
         this_year = datetime.now().year
         user_expense_data = self.expense_model.objects.filter(
@@ -151,7 +172,8 @@ class ExpenseCategoryView(LoggedInView):
         )
         data = {
             'user_data': user_expense_data,
-            'add_expense_form': add_expense_form,
+            'expense_form_edit': self.form_class(),
+            'expense_form_add': self.form_class(),
             'amount_sum': user_expense_data.aggregate(Sum('amount'))['amount__sum'],
             'category_name': category.name,
             'category_description': category.long_description

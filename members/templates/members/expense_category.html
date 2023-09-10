@@ -12,6 +12,15 @@
         $("#deletemodal .description").text(description);
         $('#deletemodal #delete-pk').attr('value', pk);
     });
+
+    $('.edit-button').click(function(){
+        var pk = $(this).data("pk");
+        var description = $(this).data("description");
+        var amount = $(this).data("amount");
+        $('#editmodal #edit-pk').attr('value', pk);
+        $('#editmodal #id_description').attr('value', description);
+        $('#editmodal #id_amount').attr('value', amount);
+    });
   })
 </script>
 
@@ -26,7 +35,7 @@
       <tr>
         <th scope="col">Amount</th>
         <th scope="col">Description</th>
-        <th scope="col">Date Added</th>
+        <th scope="col">Date Added / Updated</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -36,11 +45,14 @@
             <td>{{expense.amount}}</td>
             <td>{{expense.description}}</td>
             <td>{{expense.date}}</td>
-            <td><button type="button" data-bs-toggle="modal" data-bs-target="#deletemodal" class="btn btn-danger delete-button btn-sm" data-pk="{{expense.pk}}" data-description="{{expense.description}}">Delete</button></td>
+            <td>
+              <button type="button" data-bs-toggle="modal" data-bs-target="#editmodal" class="btn btn-primary edit-button btn-sm" data-pk="{{expense.pk}}" data-description="{{expense.description}}" data-amount="{{expense.amount}}">Edit</button>
+              <button type="button" data-bs-toggle="modal" data-bs-target="#deletemodal" class="btn btn-danger delete-button btn-sm" data-pk="{{expense.pk}}" data-description="{{expense.description}}">Delete</button>
+            </td>
         </tr>
         {% endfor %}
         <tr>
-            <td colspan="3">Total: {{amount_sum}}</td>
+            <td colspan="4">Total: {{amount_sum}}</td>
         </tr>
     </tbody>
 </table>
@@ -49,10 +61,10 @@
 
 <form class="row g-3" method="post">
     {% csrf_token %}
-    {% for field in add_expense_form %}
+    {% for field in expense_form_add %}
     <div class="col-auto">
       <label for="{{ field.id_for_label }}" class="visually-hidden">{{ field.label_tag }}</label>
-      <input type="text" type="{{field.widget_type}}" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" placeholder="{{ field.name }}" required>
+      <input type="text" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" placeholder="{{ field.name }}" required>
     </div>
     {% endfor %}
     <div class="col-auto">
@@ -82,6 +94,34 @@
         </form>
       </div>
     </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodallabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Expense Item</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+            {% for field in expense_form_edit %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label_tag }}</label>
+              <input type="text" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" value="">
+            </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+              <input type="hidden" id="edit-pk" name="edit_pk" value="">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" name="submit" value="edit">Submit</button>
+          </div>
+      </form>
+    </div>
+  </div>
 </div>
   
 {% endblock %}
