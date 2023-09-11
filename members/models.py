@@ -35,11 +35,18 @@ class Expense(models.Model):
     
 
 class SupportTicket(models.Model):
+    STATUS_CHOICES = (
+        ("Open", "Open"),
+        ("Staff Replied", "Staff Replied"),
+        ("User Replied", "User Replied"),
+        ("Closed", "Closed"),
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(auto_now=True)
     subject = models.CharField(max_length=255)
     body = models.TextField()
-    status = models.CharField(max_length=255)
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES, default="Open")
 
     class Meta:
         ordering = ['date']
@@ -50,7 +57,7 @@ class SupportTicket(models.Model):
 
 class SupportTicketReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE, related_name='replies'),
+    ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE, related_name='replies')
     date = models.DateField(auto_now=True)
     body = models.TextField()
 

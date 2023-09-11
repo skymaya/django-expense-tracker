@@ -15,8 +15,12 @@
             {% csrf_token %}
             {% for field in new_ticket_form %}
             <div class="mb-3">
-            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label_tag }}</label>
-            <input name="{{ field.name }}" type="{{field.widget_type}}" class="form-control" id="{{ field.id_for_label }}">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label_tag }}</label>
+                {% if field.widget_type == 'textarea' %}
+                <textarea name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" rows="5"></textarea>
+                {% else %}
+                <input name="{{ field.name }}" type="{{field.widget_type}}" class="form-control" id="{{ field.id_for_label }}">
+                {% endif %}
             </div>
             {% endfor %}
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -30,6 +34,7 @@
     <table class="table table-striped table-hover">
         <thead>
           <tr>
+            <th scope="col">Status</th>
             <th scope="col">Subject</th>
             <th scope="col">Date</th>
           </tr>

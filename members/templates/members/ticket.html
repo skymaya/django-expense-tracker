@@ -1,16 +1,49 @@
 {% extends 'members_base.html' %}
 {% load static %}
-{% block title %}Ticket #{{ticket.pk}}{% endblock %}
+{% block title %}Ticket #{{object.pk}}{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-4">
-        <h4>Ticket #{{ticket.pk}}</h4>
-        <h5>{{ticket.subject}}</h5>
-        <p>{{ticket.body}}</p>
+    <div class="col-md-6">
+        <h4>Ticket #{{object.pk}}</h4>
+        <h5>{{object.subject}}</h5>
+        <p>{{object.date}}<br>{{object.body}}</p>
     </div>
 </div>
 
-{{ticket.replies}}
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h5>Replies</h5>
+        {% if object.replies %}
+        {% for reply in object.replies.all %}
+            <div class="ps-3 pt-2 mt-2 {% if reply.user.is_staff %}staff-ticket-reply{% else %}user-ticket-reply{% endif %}">
+                <p>From: {{reply.user}}<br>{{reply.date}}</p>
+                <p>{{reply.body}}</p>
+            </div>
+        {% endfor %}
+        {% else %}
+        <p>No replies.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5 mb-5">
+    <div class="col-md-4">
+        <h5>Add new reply</h5>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in ticket_reply_form %}
+            <div class="mb-3">
+                {% if field.widget_type == 'textarea' %}
+                <textarea name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" rows="5"></textarea>
+                {% else %}
+                <input name="{{ field.name }}" type="{{field.widget_type}}" class="form-control" id="{{ field.id_for_label }}">
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
 
 {% endblock %}

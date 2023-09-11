@@ -14,16 +14,17 @@ from django.views import generic, View
 from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic.detail import DetailView
 from .forms import (
     SignUpForm, 
     ExpenseForm, 
-    TicketForm
+    TicketForm,
+    TicketReplyForm
 )
 from .models import (
     Expense, 
     ExpenseCategory, 
-    SupportTicket, 
-    SupportTicketReply
+    SupportTicket
 )
 
 
@@ -38,6 +39,11 @@ user_login_failed.connect(login_failed_message)
 
 
 class LoggedInView(LoginRequiredMixin, TemplateView):
+    login_url = reverse_lazy('login')
+    template_name = None
+
+
+class LoggedInDetailView(LoginRequiredMixin, DetailView):
     login_url = reverse_lazy('login')
     template_name = None
 
@@ -88,34 +94,36 @@ class SupportView(LoggedInView):
         return render(request, self.template_name, data)
     
 
-class TicketView(LoggedInView):
+class TicketView(LoggedInDetailView):
     template_name = "members/ticket.html"
-    ticket_model = SupportTicket
+    model = SupportTicket
+    form_class = TicketReplyForm
 
-    def post(self, request, *args, **kwargs):
-        # form = self.form_class(request.POST)
-        # if form.is_valid():
-        #     obj = form.save(commit=False)
-        #     obj.user = request.user
-        #     obj.status = 'Open'
-        #     obj.save()
-        #     messages.success(request, 'Support ticket created')
-        # else:
-        #     messages.error(request, f'Support ticket create failed{form.errors}')
+    def post(self, request, pk, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            main_ticket = SupportTicket.objects.get(pk=pk)
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.ticket = main_ticket
+            obj.save()
+            main_ticket.status = 'User Replied'
+            main_ticket.save()
+            messages.success(request, 'Reply added')
+        else:
+            messages.error(request, f'Reply add failed{form.errors}')
 
         return HttpResponseRedirect(self.request.path_info)
-
-    def get(self, request, *args, **kwargs):
-        ticket = get_object_or_404(
-            self.ticket_model,
+    
+    def get_context_data(self, **kwargs):
+        get_object_or_404(
+            self.model,
             pk=self.kwargs['pk'],
-            user=request.user
+            user=self.request.user
         )
-        data = {
-            'blah': 'blah',
-            'ticket': ticket
-        }
-        return render(request, self.template_name, data)
+        context = super().get_context_data(**kwargs)
+        context["ticket_reply_form"] = self.form_class()
+        return context
 
 
 class DashboardView(LoggedInView):

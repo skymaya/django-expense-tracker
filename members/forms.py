@@ -5,11 +5,21 @@ from .models import (
     User, 
     Expense, 
     ExpenseCategory, 
-    SupportTicket
+    SupportTicket,
+    SupportTicketReply
 )
 
 
+class TicketReplyForm(forms.ModelForm):
+    body = forms.CharField(widget=forms.Textarea())
+    
+    class Meta:
+        model = SupportTicketReply
+        fields = ['body']
+
+
 class TicketForm(forms.ModelForm):
+    body = forms.CharField(widget=forms.Textarea())
     
     class Meta:
         model = SupportTicket
