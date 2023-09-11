@@ -11,7 +11,7 @@ from .models import (
 
 
 class TicketReplyForm(forms.ModelForm):
-    body = forms.CharField(widget=forms.Textarea())
+    body = forms.CharField(widget=forms.Textarea(), label='Ticket Body')
     
     class Meta:
         model = SupportTicketReply
@@ -19,7 +19,7 @@ class TicketReplyForm(forms.ModelForm):
 
 
 class TicketForm(forms.ModelForm):
-    body = forms.CharField(widget=forms.Textarea())
+    body = forms.CharField(widget=forms.Textarea(), label='Ticket Body')
     
     class Meta:
         model = SupportTicket
