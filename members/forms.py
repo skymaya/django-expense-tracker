@@ -1,7 +1,19 @@
+import re
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User, Expense, ExpenseCategory
-import re
+from .models import (
+    User, 
+    Expense, 
+    ExpenseCategory, 
+    SupportTicket
+)
+
+
+class TicketForm(forms.ModelForm):
+    
+    class Meta:
+        model = SupportTicket
+        fields = ['subject', 'body']
 
 
 class ExpenseCategoryForm(forms.ModelForm):

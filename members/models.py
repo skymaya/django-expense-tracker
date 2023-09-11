@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import datetime
 
 
 class User(AbstractUser):
@@ -22,7 +23,7 @@ class ExpenseCategory(models.Model):
 class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE)
-    date = models.DateField(auto_now=True)
+    date = models.DateField(default=datetime.date.today)
     amount = models.FloatField(default=0)
     description = models.CharField(max_length=255)
 
@@ -38,6 +39,7 @@ class SupportTicket(models.Model):
     date = models.DateField(auto_now=True)
     subject = models.CharField(max_length=255)
     body = models.TextField()
+    status = models.CharField(max_length=255)
 
     class Meta:
         ordering = ['date']
@@ -51,7 +53,6 @@ class SupportTicketReply(models.Model):
     ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE)
     date = models.DateField(auto_now=True)
     body = models.TextField()
-    status = models.CharField(max_length=255)
 
     class Meta:
         ordering = ['date']

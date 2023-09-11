@@ -6,17 +6,25 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import logout
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.views.generic import TemplateView
 from django.views import generic, View
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import TemplateView
-from django.contrib import messages
 from django.db.models import Sum
-from .forms import SignUpForm, ExpenseForm
-from .models import Expense, ExpenseCategory, SupportTicket, SupportTicketReply
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import DetailView
+from .forms import (
+    SignUpForm, 
+    ExpenseForm, 
+    TicketForm
+)
+from .models import (
+    Expense, 
+    ExpenseCategory, 
+    SupportTicket, 
+    SupportTicketReply
+)
 
 
 def logout_message(sender, user, request, **kwargs):
@@ -56,7 +64,28 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
 class SupportView(LoggedInView):
     template_name = "members/support.html"
     ticket_model = SupportTicket
-    ticket_reply_model = SupportTicketReply
+    form_class = TicketForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.status = 'Open'
+            obj.save()
+            messages.success(request, 'Support ticket created')
+        else:
+            messages.error(request, f'Support ticket create failed{form.errors}')
+
+        return HttpResponseRedirect(self.request.path_info)
+
+    def get(self, request, *args, **kwargs):
+        user_tickets = self.ticket_model.objects.filter(user=request.user)
+        data = {
+            'new_ticket_form': self.form_class(),
+            'user_tickets': user_tickets
+        }
+        return render(request, self.template_name, data)
 
 
 class DashboardView(LoggedInView):

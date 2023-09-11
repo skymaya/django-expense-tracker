@@ -3,6 +3,50 @@
 {% block title %}Support{% endblock %}
 
 {% block content %}
-<h4>Support</h4>
-<p>Do you need help, want to report a bug, or make a suggestion on how we can improve the service? Fill out the form below and we'll reply as soon as possible!</p>
+<div class="row">
+    <h4>Support</h4>
+    <p>Do you need help, want to report a bug, or make a suggestion on how we can improve the service? Fill out the support ticket form below and we'll reply as soon as possible!</p>
+</div>
+
+<div class="row mt-3">
+    <h5>New Support Ticket</h5>
+    <div class="col-md-4">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in new_ticket_form %}
+            <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label_tag }}</label>
+            <input name="{{ field.name }}" type="{{field.widget_type}}" class="form-control" id="{{ field.id_for_label }}">
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <h5>Your Support Tickets</h5>
+    {% if user_tickets %}
+    <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Subject</th>
+            <th scope="col">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for ticket in user_tickets.all %}
+            <tr>
+                <td>{{ticket.status}}</td>
+                <td>{{ticket.subject}}</td>
+                <td>{{ticket.date}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You don't currently have any support tickets.</p>
+    {% endif %}
+</div>
+
 {% endblock %}
