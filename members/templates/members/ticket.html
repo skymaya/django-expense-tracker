@@ -1,0 +1,16 @@
+{% extends 'members_base.html' %}
+{% load static %}
+{% block title %}Ticket #{{ticket.pk}}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <h4>Ticket #{{ticket.pk}}</h4>
+        <h5>{{ticket.subject}}</h5>
+        <p>{{ticket.body}}</p>
+    </div>
+</div>
+
+{{ticket.replies}}
+
+{% endblock %}

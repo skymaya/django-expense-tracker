@@ -50,7 +50,7 @@ class SupportTicket(models.Model):
 
 class SupportTicketReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE, related_name='replies'),
     date = models.DateField(auto_now=True)
     body = models.TextField()
 

@@ -5,7 +5,8 @@ from .views import (
     LoginView, 
     ExpenseCategoryView, 
     LogoutView, 
-    SupportView
+    SupportView,
+    TicketView
 )
 
 urlpatterns = [
@@ -14,5 +15,6 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("login/", LoginView.as_view(), name="login"),
     path("support/", SupportView.as_view(), name="support"),
+    path("ticket/<int:pk>", TicketView.as_view(), name="ticket"),
     path("<slug:slug>/", ExpenseCategoryView.as_view(), name="expense_category"),
 ]

@@ -38,7 +38,7 @@
             {% for ticket in user_tickets.all %}
             <tr>
                 <td>{{ticket.status}}</td>
-                <td>{{ticket.subject}}</td>
+                <td><a href="{% url 'ticket' pk=ticket.pk %}">{{ticket.subject}}</a></td>
                 <td>{{ticket.date}}</td>
             </tr>
             {% endfor %}

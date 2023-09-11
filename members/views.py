@@ -86,6 +86,36 @@ class SupportView(LoggedInView):
             'user_tickets': user_tickets
         }
         return render(request, self.template_name, data)
+    
+
+class TicketView(LoggedInView):
+    template_name = "members/ticket.html"
+    ticket_model = SupportTicket
+
+    def post(self, request, *args, **kwargs):
+        # form = self.form_class(request.POST)
+        # if form.is_valid():
+        #     obj = form.save(commit=False)
+        #     obj.user = request.user
+        #     obj.status = 'Open'
+        #     obj.save()
+        #     messages.success(request, 'Support ticket created')
+        # else:
+        #     messages.error(request, f'Support ticket create failed{form.errors}')
+
+        return HttpResponseRedirect(self.request.path_info)
+
+    def get(self, request, *args, **kwargs):
+        ticket = get_object_or_404(
+            self.ticket_model,
+            pk=self.kwargs['pk'],
+            user=request.user
+        )
+        data = {
+            'blah': 'blah',
+            'ticket': ticket
+        }
+        return render(request, self.template_name, data)
 
 
 class DashboardView(LoggedInView):
