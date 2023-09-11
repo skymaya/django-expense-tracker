@@ -8,10 +8,10 @@ class User(AbstractUser):
 
 
 class ExpenseCategory(models.Model):
-    name = models.CharField(max_length=255)
-    long_description = models.TextField()
-    slug = models.CharField(max_length=255)
-    hex_color = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, verbose_name='Name')
+    long_description = models.TextField(verbose_name='Description')
+    slug = models.CharField(max_length=255, verbose_name='Slug')
+    hex_color = models.CharField(max_length=255, verbose_name='Hex Color')
 
     class Meta:
         ordering = ['name']
@@ -23,9 +23,9 @@ class ExpenseCategory(models.Model):
 class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE)
-    date = models.DateField(default=datetime.date.today)
-    amount = models.FloatField(default=0)
-    description = models.CharField(max_length=255)
+    date = models.DateField(default=datetime.date.today, verbose_name='Date')
+    amount = models.FloatField(default=0, verbose_name='Amount')
+    description = models.CharField(max_length=255, verbose_name='Description')
 
     class Meta:
         ordering = ['date']
@@ -43,9 +43,9 @@ class SupportTicket(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(auto_now=True)
-    subject = models.CharField(max_length=255)
-    body = models.TextField()
+    date = models.DateField(auto_now=True, verbose_name='Date')
+    subject = models.CharField(max_length=255, verbose_name='Subject')
+    body = models.TextField(verbose_name='Ticket Body')
     status = models.CharField(max_length=255, choices=STATUS_CHOICES, default="Open")
 
     class Meta:
@@ -58,8 +58,8 @@ class SupportTicket(models.Model):
 class SupportTicketReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE, related_name='replies')
-    date = models.DateField(auto_now=True)
-    body = models.TextField()
+    date = models.DateField(auto_now=True, verbose_name='Date')
+    body = models.TextField(verbose_name='Ticket Body')
 
     class Meta:
         ordering = ['date']

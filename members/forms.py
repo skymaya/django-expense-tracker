@@ -10,25 +10,37 @@ from .models import (
 )
 
 
-class TicketReplyForm(forms.ModelForm):
-    body = forms.CharField(widget=forms.Textarea(), label='Ticket Body')
+class CustomModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Loop through the fields and set their labels to the verbose_name of the model field
+        # keep the label setting / verbose_name in one place (model), be able to override fields
+        # in form classes here and not need to set the label again
+        for field_name, field in self.fields.items():
+            model_field = self._meta.model._meta.get_field(field_name)
+            if model_field.verbose_name:
+                field.label = model_field.verbose_name
+
+
+class TicketReplyForm(CustomModelForm):
+    body = forms.CharField(widget=forms.Textarea())
     
     class Meta:
         model = SupportTicketReply
         fields = ['body']
 
 
-class TicketForm(forms.ModelForm):
-    body = forms.CharField(widget=forms.Textarea(), label='Ticket Body')
+class TicketForm(CustomModelForm):
+    body = forms.CharField(widget=forms.Textarea())
     
     class Meta:
         model = SupportTicket
         fields = ['subject', 'body']
 
 
-class ExpenseCategoryForm(forms.ModelForm):
+class ExpenseCategoryForm(CustomModelForm):
     hex_color = forms.CharField(
-        label='Hex Color', 
         max_length=7,
         help_text='For use with chart rendering',
         widget=forms.TextInput(attrs={'type': 'color'})
@@ -39,7 +51,7 @@ class ExpenseCategoryForm(forms.ModelForm):
         fields = ['name', 'long_description', 'slug', 'hex_color']
 
 
-class ExpenseForm(forms.ModelForm):
+class ExpenseForm(CustomModelForm):
     
     class Meta:
         model = Expense
