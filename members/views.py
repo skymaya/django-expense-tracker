@@ -66,6 +66,12 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
     template_name = "members/signup.html"
     success_message = '<i class="bi bi-check-circle-fill"></i> Signup complete. You may now log in.'
 
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+        return super().get(request, *args, **kwargs)
+
 
 class SupportView(LoggedInView):
     template_name = "members/support.html"
@@ -107,7 +113,10 @@ class TicketView(LoggedInDetailView):
             obj.user = request.user
             obj.ticket = main_ticket
             obj.save()
-            main_ticket.status = 'User Replied'
+            if request.POST.get('close_ticket'):
+                main_ticket.status = 'Closed'
+            else:
+                main_ticket.status = 'User Replied'
             main_ticket.save()
             messages.success(request, 'Reply added')
         else:
