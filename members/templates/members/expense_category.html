@@ -52,7 +52,7 @@
         </tr>
         {% endfor %}
         <tr>
-            <td colspan="4">Total: {{amount_sum}}</td>
+            <td colspan="4">Total: {% if amount_sum %}{{amount_sum}}{% else %}0{% endif %}</td>
         </tr>
     </tbody>
 </table>

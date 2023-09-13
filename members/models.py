@@ -66,3 +66,9 @@ class SupportTicketReply(models.Model):
 
     def __str__(self):
         return f'Reply to {self.ticket.subject}'
+    
+    def save(self, *args, **kwargs):
+        if self.user.is_staff:
+            self.ticket.status = 'Staff Replied'
+            self.ticket.save()
+        super(SupportTicketReply, self).save(*args, **kwargs)
