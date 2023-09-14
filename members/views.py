@@ -71,6 +71,22 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
         if request.user.is_authenticated:
             return redirect('dashboard')
         return super().get(request, *args, **kwargs)
+    
+
+class AccountView(LoggedInView):
+    template_name = "members/account.html"
+
+    def post(self, request, *args, **kwargs):
+        submit_val = request.POST.get('submit')
+
+        if submit_val == 'deleteaccount':
+            if request.user.is_staff:
+                messages.error(request, 'Your account cannot be deleted. Please contact support.')
+            else:
+                request.user.delete()
+                return redirect("home")
+
+        return HttpResponseRedirect(self.request.path_info)
 
 
 class SupportView(LoggedInView):
