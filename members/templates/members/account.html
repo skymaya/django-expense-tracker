@@ -9,7 +9,41 @@
     </div>
 </div>
 
-<button type="button" data-bs-toggle="modal" data-bs-target="#deleteaccountmodal" class="btn btn-danger deleteaccount-button btn-sm">Delete Account</button>
+<div class="row mt-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h6 class="card-title">Change your email address</h6>
+      </div>
+      <div class="card-body">
+        <p class="card-text">Your email address is currently set to: {{user_email}}</p>
+        <form class="row g-3" method="post">
+          {% csrf_token %}
+          <div class="col-auto">
+            <input type="text" name="new_email" class="form-control" id="changeemail" placeholder="New email address" required>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3" name="submit" value="changeemail">Change Email Address</button>
+          </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h6 class="card-title">Delete your account</h6>
+      </div>
+      <div class="card-body">
+        <p class="card-text">Click the button below to delete your account. All of your user data will be removed.</p>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteaccountmodal" class="btn btn-danger deleteaccount-button btn-sm">Delete Account</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="deleteaccountmodal" tabindex="-1" aria-labelledby="deleteaccountmodallabel" aria-hidden="true">
