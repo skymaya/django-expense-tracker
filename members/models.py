@@ -1,10 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 import datetime
+from django.core.validators import validate_email
 
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, validators=[validate_email])
 
 
 class ExpenseCategory(models.Model):

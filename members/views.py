@@ -14,8 +14,9 @@ from django.views import generic, View
 from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import Sum
 from django.db import IntegrityError
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.generic.detail import DetailView
+
 from .forms import (
     SignUpForm, 
     ExpenseForm, 
@@ -82,9 +83,13 @@ class AccountView(LoggedInView):
 
         if submit_val == 'changeemail':
             new_email = request.POST.get('new_email')
+
             try:
                 request.user.email = new_email
+                request.user.clean_fields()
                 request.user.save()
+            except ValidationError:
+                messages.error(request, 'Invalid email address.')
             except IntegrityError:
                 messages.error(request, 'Email address change failed, please contact support.')
             else:

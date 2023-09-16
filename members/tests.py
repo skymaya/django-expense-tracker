@@ -7,15 +7,16 @@ from .models import User, ExpenseCategory, Expense
 from django.db import IntegrityError
 
 
-class MembersTests(TestCase):
+class MembersExpenseTests(TestCase):
+    user = None
     password = 'password'
     username = 'user'
     email = 'example@example.com'
 
     def setUp(self):
-        user = User.objects.create(username=self.username, email=self.email)
-        user.set_password(self.password)
-        user.save()
+        self.user = User.objects.create(username=self.username, email=self.email)
+        self.user.set_password(self.password)
+        self.user.save()
 
         category = ExpenseCategory.objects.create(name='Entertainment',
                                                   slug='entertainment',
@@ -62,3 +63,55 @@ class MembersTests(TestCase):
         self.assertEqual(expense.description, 'streaming service')
         self.assertEqual(expense.category.slug, 'entertainment')
         self.assertEqual(expense.user.username, self.username)
+
+
+class MembersAccountTests(TestCase):
+    user = None
+    password = 'password'
+    username = 'user'
+    email = 'example@example.com'
+    new_email_correct = 'test@example.com'
+    new_email_incorrect = 'fdgdfdfvbdfbdb'
+
+    def setUp(self):
+        self.user = User.objects.create(username=self.username, email=self.email)
+        self.user.set_password(self.password)
+        self.user.save()
+        self.client = Client()
+        self.client.login(username=self.username, password=self.password)
+
+    def test_change_password_correctly(self):
+        path = '/members/account/'
+        payload = {
+            'new_email': self.new_email_correct,
+            'submit': 'changeemail'
+        }
+        response = self.client.post(path, payload)
+        updated_user = User.objects.get(username=self.username)
+        self.assertEqual(updated_user.email, self.new_email_correct)
+
+    def test_change_password_incorrectly(self):
+        path = '/members/account/'
+        payload = {
+            'new_email': self.new_email_incorrect,
+            'submit': 'changeemail'
+        }
+        response = self.client.post(path, payload)
+        updated_user = User.objects.get(username=self.username)
+        self.assertEqual(updated_user.email, self.email)
+
+    # def test_delete_account(self):
+    #     pass
+
+
+# class MembersSupportTests(TestCase):
+#     password = 'password'
+#     username = 'user'
+#     email = 'example@example.com'
+
+#     def setUp(self):
+#         user = User.objects.create(username=self.username, email=self.email)
+#         user.set_password(self.password)
+#         user.save()
+#         self.client = Client()
+#         self.client.login(username=self.username, password=self.password)
