@@ -20,7 +20,7 @@
         <form class="row g-3" method="post">
           {% csrf_token %}
           <div class="col-auto">
-            <input type="text" name="new_email" class="form-control" id="changeemail" placeholder="New email address" required>
+            <input type="email" name="new_email" class="form-control" id="changeemail" placeholder="New email address" required>
           </div>
           <div class="col-auto">
             <button type="submit" class="btn btn-primary mb-3" name="submit" value="changeemail">Change Email Address</button>
