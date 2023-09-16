@@ -54,8 +54,11 @@ class MembersTests(TestCase):
         expense = Expense.objects.get(
             user__username=self.username,
             amount=12,
-            description='streaming service'
+            description='streaming service',
+            category__slug='entertainment'
         )
         self.assertEqual(errors, None)
         self.assertEqual(expense.amount, 12)
         self.assertEqual(expense.description, 'streaming service')
+        self.assertEqual(expense.category.slug, 'entertainment')
+        self.assertEqual(expense.user.username, self.username)
