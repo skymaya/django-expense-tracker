@@ -1,10 +1,6 @@
-import datetime
-
 from django.test import TestCase, Client
-from django.utils import timezone
 from django.urls import reverse
 from .models import User, ExpenseCategory, Expense
-from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 
 
