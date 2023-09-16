@@ -95,7 +95,7 @@ class AccountView(LoggedInView):
                 messages.error(request, 'Your account cannot be deleted. Please contact support.')
             else:
                 request.user.delete()
-                return redirect("home")
+                return redirect('home')
 
         return HttpResponseRedirect(self.request.path_info)
     
