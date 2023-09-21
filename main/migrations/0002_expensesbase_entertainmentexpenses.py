@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('members', '0001_initial'),
+        ('main', '0001_initial'),
     ]
 
     operations = [
@@ -27,8 +27,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EntertainmentExpenses',
             fields=[
-                ('expensesbase_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='members.expensesbase')),
+                ('expensesbase_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='main.expensesbase')),
             ],
-            bases=('members.expensesbase',),
+            bases=('main.expensesbase',),
         ),
     ]

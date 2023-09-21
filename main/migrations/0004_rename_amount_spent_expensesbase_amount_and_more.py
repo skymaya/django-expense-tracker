@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('members', '0003_remove_expensesbase_amount_expensesbase_amount_spent_and_more'),
+        ('main', '0003_remove_expensesbase_amount_expensesbase_amount_spent_and_more'),
     ]
 
     operations = [

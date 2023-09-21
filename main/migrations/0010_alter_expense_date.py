@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('members', '0009_supportticket_expensecategory_hex_color_and_more'),
+        ('main', '0009_supportticket_expensecategory_hex_color_and_more'),
     ]
 
     operations = [

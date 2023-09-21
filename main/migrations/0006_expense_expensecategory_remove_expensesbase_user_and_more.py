@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('members', '0005_alter_expensesbase_date'),
+        ('main', '0005_alter_expensesbase_date'),
     ]
 
     operations = [
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='expense',
             name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='members.expensecategory'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.expensecategory'),
         ),
         migrations.AddField(
             model_name='expense',

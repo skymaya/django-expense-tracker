@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('members', '0014_alter_supportticket_body'),
+        ('main', '0014_alter_supportticket_body'),
     ]
 
     operations = [

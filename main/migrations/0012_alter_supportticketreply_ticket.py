@@ -7,13 +7,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('members', '0011_remove_supportticketreply_status_and_more'),
+        ('main', '0011_remove_supportticketreply_status_and_more'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='supportticketreply',
             name='ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='replies', to='members.supportticket'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='replies', to='main.supportticket'),
         ),
     ]

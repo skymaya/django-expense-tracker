@@ -57,7 +57,7 @@ class HomeView(View):
 
 class LoginView(auth_views.LoginView):
     form_class = AuthenticationForm
-    template_name = "members/login.html"
+    template_name = "main/login.html"
 
 
 class LogoutView(View):
@@ -70,7 +70,7 @@ class LogoutView(View):
 class SignUpView(SuccessMessageMixin, generic.CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy("login")
-    template_name = "members/signup.html"
+    template_name = "main/signup.html"
     success_message = '<i class="bi bi-check-circle-fill"></i> Signup complete. You may now log in.'
 
     def get(self, request, *args, **kwargs):
@@ -81,7 +81,7 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
     
 
 class AccountView(LoggedInView):
-    template_name = "members/account.html"
+    template_name = "main/account.html"
 
     def post(self, request, *args, **kwargs):
         submit_val = request.POST.get('submit')
@@ -119,7 +119,7 @@ class AccountView(LoggedInView):
 
 
 class SupportView(LoggedInView):
-    template_name = "members/support.html"
+    template_name = "main/support.html"
     ticket_model = SupportTicket
     form_class = TicketForm
 
@@ -146,7 +146,7 @@ class SupportView(LoggedInView):
     
 
 class TicketView(LoggedInDetailView):
-    template_name = "members/ticket.html"
+    template_name = "main/ticket.html"
     model = SupportTicket
     form_class = TicketReplyForm
 
@@ -181,7 +181,7 @@ class TicketView(LoggedInDetailView):
 
 
 class DashboardView(LoggedInView):
-    template_name = "members/dashboard.html"
+    template_name = "main/dashboard.html"
     expense_model = Expense
 
     def get(self, request, *args, **kwargs):
@@ -221,7 +221,7 @@ class DashboardView(LoggedInView):
 
 
 class ExpenseCategoryView(LoggedInView):
-    template_name = "members/expense_category.html"
+    template_name = "main/expense_category.html"
     form_class = ExpenseForm
     expense_model = Expense
     category_model = ExpenseCategory

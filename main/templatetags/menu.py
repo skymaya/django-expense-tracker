@@ -1,7 +1,7 @@
 """docstring"""
 
 from django import template
-from members.models import ExpenseCategory
+from main.models import ExpenseCategory
 
 register = template.Library()
 
