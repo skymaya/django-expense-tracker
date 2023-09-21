@@ -27,7 +27,7 @@ class BaseTests(TestCase):
         self.client.login(username=self.username, password=self.password)
 
 
-class MembersExpenseTests(BaseTests):
+class ExpenseTests(BaseTests):
     category = None
 
     @classmethod
@@ -52,7 +52,7 @@ class MembersExpenseTests(BaseTests):
         """
         Test that it is possible to add an expense correctly
         """
-        path = '/members/entertainment/'
+        path = '/entertainment/'
         payload = {
             'amount': '12',
             'description': 'streaming service',
@@ -71,7 +71,7 @@ class MembersExpenseTests(BaseTests):
         self.assertEqual(expense.user.username, self.username)
 
 
-class MembersAccountTests(BaseTests):
+class AccountTests(BaseTests):
     category = None
 
     @classmethod
@@ -86,7 +86,7 @@ class MembersAccountTests(BaseTests):
         """
         Test that it's possible to change a user email correctly
         """
-        path = '/members/account/'
+        path = '/account/'
         payload = {
             'new_email': self.new_email_correct,
             'submit': 'changeemail'
@@ -99,7 +99,7 @@ class MembersAccountTests(BaseTests):
         """
         Test that it's impossible to change a user email incorrectly
         """
-        path = '/members/account/'
+        path = '/account/'
         payload = {
             'new_email': self.new_email_incorrect,
             'submit': 'changeemail'
@@ -118,7 +118,7 @@ class MembersAccountTests(BaseTests):
             description='streaming service',
             category=self.category
         )
-        path = '/members/account/'
+        path = '/account/'
         payload = {
             'submit': 'deleteaccount'
         }
@@ -129,13 +129,13 @@ class MembersAccountTests(BaseTests):
             Expense.objects.get(user__username=self.username)
 
 
-class MembersSupportTests(BaseTests):
+class SupportTests(BaseTests):
 
     def test_create_ticket(self):
         """
         Test that it's possible to create a new support ticket
         """
-        path = '/members/support/'
+        path = '/support/'
         body = 'This is a new ticket'
         subject = 'New ticket'
         payload = {
@@ -155,7 +155,7 @@ class MembersSupportTests(BaseTests):
         """
         Test that it's possible to create a ticket reply
         """
-        path = '/members/support/'
+        path = '/support/'
         body = 'This is a new ticket'
         subject = 'New ticket'
         payload = {
@@ -168,7 +168,7 @@ class MembersSupportTests(BaseTests):
             body=body,
             subject=subject
         )
-        path = f'/members/ticket/{ticket.pk}'
+        path = f'/ticket/{ticket.pk}'
         body1 = 'This is a ticket reply 1'
         payload = {
             'body': body1,

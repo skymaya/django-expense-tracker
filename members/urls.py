@@ -7,10 +7,13 @@ from .views import (
     LogoutView, 
     SupportView,
     TicketView,
-    AccountView
+    AccountView,
+    HomeView
 )
 
 urlpatterns = [
+    path("", HomeView.as_view(), name="home"),
+    #path("privacy", PrivacyPolicyView.as_view(), name="privacy"),
     path("signup/", SignUpView.as_view(), name="signup"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("logout/", LogoutView.as_view(), name="logout"),

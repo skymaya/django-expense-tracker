@@ -50,6 +50,11 @@ class LoggedInDetailView(LoginRequiredMixin, DetailView):
     template_name = None
 
 
+class HomeView(View):
+    def get(self, request, *args, **kwargs):
+        return redirect('login')
+
+
 class LoginView(auth_views.LoginView):
     form_class = AuthenticationForm
     template_name = "members/login.html"
