@@ -4,12 +4,14 @@ from .models import User, ExpenseCategory, Expense
 from django.core.exceptions import ObjectDoesNotExist
 
 
-class MembersExpenseTests(TestCase):
+class BaseTests(TestCase):
     user = None
     category = None
     password = 'password'
     username = 'user'
     email = 'example@example.com'
+    new_email_correct = 'test@example.com'
+    new_email_incorrect = 'fdgdfdfvbdfbdb'
 
     def setUp(self):
         self.user = User.objects.create(username=self.username, email=self.email)
@@ -24,6 +26,9 @@ class MembersExpenseTests(TestCase):
 
         self.client = Client()
         self.client.login(username=self.username, password=self.password)
+
+
+class MembersExpenseTests(BaseTests):
 
     def test_category_slug_response_code(self):
         """
@@ -58,27 +63,7 @@ class MembersExpenseTests(TestCase):
         self.assertEqual(expense.user.username, self.username)
 
 
-class MembersAccountTests(TestCase):
-    user = None
-    category = None
-    password = 'password'
-    username = 'user'
-    email = 'example@example.com'
-    new_email_correct = 'test@example.com'
-    new_email_incorrect = 'fdgdfdfvbdfbdb'
-
-    def setUp(self):
-        self.user = User.objects.create(username=self.username, email=self.email)
-        self.user.set_password(self.password)
-        self.user.save()
-        self.client = Client()
-        self.client.login(username=self.username, password=self.password)
-
-        self.category = ExpenseCategory.objects.create(name='Entertainment',
-                                                  slug='entertainment',
-                                                  long_description='Stuff you do for fun',
-                                                  hex_color='#000000')
-        self.category.save()
+class MembersAccountTests(BaseTests):
 
     def test_change_password_correctly(self):
         """
@@ -127,14 +112,10 @@ class MembersAccountTests(TestCase):
             Expense.objects.get(user__username=self.username)
 
 
-# class MembersSupportTests(TestCase):
-#     password = 'password'
-#     username = 'user'
-#     email = 'example@example.com'
+class MembersSupportTests(BaseTests):
 
-#     def setUp(self):
-#         user = User.objects.create(username=self.username, email=self.email)
-#         user.set_password(self.password)
-#         user.save()
-#         self.client = Client()
-#         self.client.login(username=self.username, password=self.password)
+    def test_create_ticket(self):
+        pass
+
+    def test_ticket_reply(self):
+        pass
