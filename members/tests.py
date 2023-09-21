@@ -1,12 +1,18 @@
+from datetime import date
 from django.test import TestCase, Client
 from django.urls import reverse
-from .models import User, ExpenseCategory, Expense
+from .models import (
+    User, 
+    ExpenseCategory, 
+    Expense, 
+    SupportTicket,
+    SupportTicketReply
+)
 from django.core.exceptions import ObjectDoesNotExist
 
 
 class BaseTests(TestCase):
     user = None
-    category = None
     password = 'password'
     username = 'user'
     email = 'example@example.com'
@@ -17,18 +23,20 @@ class BaseTests(TestCase):
         self.user = User.objects.create(username=self.username, email=self.email)
         self.user.set_password(self.password)
         self.user.save()
-
-        self.category = ExpenseCategory.objects.create(name='Entertainment',
-                                                  slug='entertainment',
-                                                  long_description='Stuff you do for fun',
-                                                  hex_color='#000000')
-        self.category.save()
-
         self.client = Client()
         self.client.login(username=self.username, password=self.password)
 
 
 class MembersExpenseTests(BaseTests):
+    category = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.category = ExpenseCategory.objects.create(name='Entertainment',
+                                                  slug='entertainment',
+                                                  long_description='Stuff you do for fun',
+                                                  hex_color='#000000')
+        cls.category.save()
 
     def test_category_slug_response_code(self):
         """
@@ -64,6 +72,15 @@ class MembersExpenseTests(BaseTests):
 
 
 class MembersAccountTests(BaseTests):
+    category = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.category = ExpenseCategory.objects.create(name='Entertainment',
+                                                  slug='entertainment',
+                                                  long_description='Stuff you do for fun',
+                                                  hex_color='#000000')
+        cls.category.save()
 
     def test_change_password_correctly(self):
         """
@@ -115,7 +132,70 @@ class MembersAccountTests(BaseTests):
 class MembersSupportTests(BaseTests):
 
     def test_create_ticket(self):
-        pass
+        """
+        Test that it's possible to create a new support ticket
+        """
+        path = '/members/support/'
+        body = 'This is a new ticket'
+        subject = 'New ticket'
+        payload = {
+            'body': body,
+            'subject': subject
+        }
+        response = self.client.post(path, payload)
+        new_ticket_test = SupportTicket.objects.get(
+            user=self.user, 
+            body=body, 
+            subject=subject
+        )
+        self.assertEqual(new_ticket_test.status, 'Open')
+        self.assertEqual(str(new_ticket_test.date), str(date.today()))
 
     def test_ticket_reply(self):
-        pass
+        """
+        Test that it's possible to create a ticket reply
+        """
+        path = '/members/support/'
+        body = 'This is a new ticket'
+        subject = 'New ticket'
+        payload = {
+            'body': body,
+            'subject': subject
+        }
+        response = self.client.post(path, payload)
+        ticket = SupportTicket.objects.get(
+            user=self.user,
+            body=body,
+            subject=subject
+        )
+        path = f'/members/ticket/{ticket.pk}'
+        body1 = 'This is a ticket reply 1'
+        payload = {
+            'body': body1,
+            'ticket': ticket
+        }
+        response = self.client.post(path, payload)
+        ticket.refresh_from_db()
+        reply1 = SupportTicketReply.objects.get(
+            body=body1,
+            ticket=ticket,
+            user=self.user
+        )
+        self.assertEqual(ticket.status, 'User Replied')
+        self.assertEqual(str(reply1.date), str(date.today()))
+
+        body2 = 'This is a ticket reply 2'
+        payload = {
+            'body': body2,
+            'ticket': ticket,
+            'close_ticket': 'on'
+        }
+        response = self.client.post(path, payload)
+        ticket.refresh_from_db()
+        reply2 = SupportTicketReply.objects.get(
+            body=body2,
+            ticket=ticket,
+            user=self.user
+        )
+        self.assertEqual(ticket.status, 'Closed')
+        self.assertEqual(str(reply2.date), str(date.today()))
