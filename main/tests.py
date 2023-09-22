@@ -16,8 +16,8 @@ class BaseTests(TestCase):
     password = 'password'
     username = 'user'
     email = 'example@example.com'
-    new_email_correct = 'test@example.com'
-    new_email_incorrect = 'fdgdfdfvbdfbdb'
+    # new_email_correct = 'test@example.com'
+    # new_email_incorrect = 'fdgdfdfvbdfbdb'
 
     def setUp(self):
         self.user = User.objects.create(username=self.username, email=self.email)
@@ -73,6 +73,8 @@ class ExpenseTests(BaseTests):
 
 class AccountTests(BaseTests):
     category = None
+    new_email_correct = 'test@example.com'
+    new_email_incorrect = 'fdgdfdfvbdfbdb'
 
     @classmethod
     def setUpTestData(cls):
@@ -82,7 +84,7 @@ class AccountTests(BaseTests):
                                                   hex_color='#000000')
         cls.category.save()
 
-    def test_change_password_correctly(self):
+    def test_change_email_correctly(self):
         """
         Test that it's possible to change a user email correctly
         """
@@ -95,7 +97,7 @@ class AccountTests(BaseTests):
         updated_user = User.objects.get(username=self.username)
         self.assertEqual(updated_user.email, self.new_email_correct)
 
-    def test_change_password_incorrectly(self):
+    def test_change_email_incorrectly(self):
         """
         Test that it's impossible to change a user email incorrectly
         """
