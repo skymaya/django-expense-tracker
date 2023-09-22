@@ -16,8 +16,6 @@ class BaseTests(TestCase):
     password = 'password'
     username = 'user'
     email = 'example@example.com'
-    # new_email_correct = 'test@example.com'
-    # new_email_incorrect = 'fdgdfdfvbdfbdb'
 
     def setUp(self):
         self.user = User.objects.create(username=self.username, email=self.email)
