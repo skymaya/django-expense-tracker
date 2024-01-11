@@ -4,9 +4,7 @@ from django import forms
 from .models import (
     User, 
     Expense, 
-    ExpenseCategory, 
-    SupportTicket,
-    SupportTicketReply
+    ExpenseCategory
 )
 
 
@@ -21,22 +19,6 @@ class CustomModelForm(forms.ModelForm):
             model_field = self._meta.model._meta.get_field(field_name)
             if model_field.verbose_name:
                 field.label = model_field.verbose_name
-
-
-class TicketReplyForm(CustomModelForm):
-    body = forms.CharField(widget=forms.Textarea())
-    
-    class Meta:
-        model = SupportTicketReply
-        fields = ['body']
-
-
-class TicketForm(CustomModelForm):
-    body = forms.CharField(widget=forms.Textarea())
-    
-    class Meta:
-        model = SupportTicket
-        fields = ['subject', 'body']
 
 
 class ExpenseCategoryForm(CustomModelForm):

@@ -4,9 +4,7 @@ from django.urls import reverse
 from .models import (
     User, 
     ExpenseCategory, 
-    Expense, 
-    SupportTicket,
-    SupportTicketReply
+    Expense
 )
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -127,75 +125,3 @@ class AccountTests(BaseTests):
             User.objects.get(username=self.username)
         with self.assertRaisesMessage(ObjectDoesNotExist, 'Expense matching query does not exist.'):
             Expense.objects.get(user__username=self.username)
-
-
-class SupportTests(BaseTests):
-
-    def test_create_ticket(self):
-        """
-        Test that it's possible to create a new support ticket
-        """
-        path = '/support/'
-        body = 'This is a new ticket'
-        subject = 'New ticket'
-        payload = {
-            'body': body,
-            'subject': subject
-        }
-        response = self.client.post(path, payload)
-        new_ticket_test = SupportTicket.objects.get(
-            user=self.user, 
-            body=body, 
-            subject=subject
-        )
-        self.assertEqual(new_ticket_test.status, 'Open')
-        self.assertEqual(str(new_ticket_test.date), str(date.today()))
-
-    def test_ticket_reply(self):
-        """
-        Test that it's possible to create a ticket reply
-        """
-        path = '/support/'
-        body = 'This is a new ticket'
-        subject = 'New ticket'
-        payload = {
-            'body': body,
-            'subject': subject
-        }
-        response = self.client.post(path, payload)
-        ticket = SupportTicket.objects.get(
-            user=self.user,
-            body=body,
-            subject=subject
-        )
-        path = f'/ticket/{ticket.pk}'
-        body1 = 'This is a ticket reply 1'
-        payload = {
-            'body': body1,
-            'ticket': ticket
-        }
-        response = self.client.post(path, payload)
-        ticket.refresh_from_db()
-        reply1 = SupportTicketReply.objects.get(
-            body=body1,
-            ticket=ticket,
-            user=self.user
-        )
-        self.assertEqual(ticket.status, 'User Replied')
-        self.assertEqual(str(reply1.date), str(date.today()))
-
-        body2 = 'This is a ticket reply 2'
-        payload = {
-            'body': body2,
-            'ticket': ticket,
-            'close_ticket': 'on'
-        }
-        response = self.client.post(path, payload)
-        ticket.refresh_from_db()
-        reply2 = SupportTicketReply.objects.get(
-            body=body2,
-            ticket=ticket,
-            user=self.user
-        )
-        self.assertEqual(ticket.status, 'Closed')
-        self.assertEqual(str(reply2.date), str(date.today()))
