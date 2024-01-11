@@ -93,13 +93,13 @@ class AccountView(LoggedInView):
             except ValidationError:
                 messages.error(request, 'Invalid email address.')
             except IntegrityError:
-                messages.error(request, 'Email address change failed, please contact support.')
+                messages.error(request, 'Email address change failed.')
             else:
                 messages.success(request, 'Your email address has been changed.')
 
         if submit_val == 'deleteaccount':
             if request.user.is_staff:
-                messages.error(request, 'Your account cannot be deleted. Please contact support.')
+                messages.error(request, 'Staff / Admin accounts cannot be deleted.')
             else:
                 request.user.delete()
                 return redirect('home')
