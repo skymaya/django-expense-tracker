@@ -40,7 +40,7 @@ Use the following command to create a superuser:
 
 #### 6. Run tests
 
-Use the following command to create a superuser:
+Use the following command to run tests:
 
 `python manage.py test`
 
