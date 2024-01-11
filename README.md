@@ -26,19 +26,19 @@ Use the following command to set up the database:
 
 `python manage.py migrate`
 
-#### 3. Static files
+#### 4. Static files
 
 Use the following command to collect the static files:
 
 `python manage.py collectstatic`
 
-#### 3. Create a superuser
+#### 5. Create a superuser
 
 Use the following command to create a superuser:
 
 `python manage.py createsuperuser`
 
-#### 3. Run tests
+#### 6. Run tests
 
 Use the following command to create a superuser:
 
@@ -46,7 +46,7 @@ Use the following command to create a superuser:
 
 The tests should all pass. Please file an issue if they don't.
 
-#### 3. Run application
+#### 7. Run application
 
 Use the following command to run the application on localhost:
 
