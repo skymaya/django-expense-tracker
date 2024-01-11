@@ -42,7 +42,7 @@ Use the following command to create a superuser:
 
 Use the following command to create a superuser:
 
-`python manage.py createsuperuser`
+`python manage.py test`
 
 The tests should all pass. Please file an issue if they don't.
 
