@@ -12,7 +12,9 @@ It is recommended to install the requirements into and run python from a virtual
 
 Clone this repo into a directory where you would like to store the source files.
 
-`git clone git@github.com:skymaya/django-expense-tracker.git .`
+`git clone giturl .`
+
+Replace "giturl" with the actual git URL of this repo.
 
 #### 2. Install requirements
 
